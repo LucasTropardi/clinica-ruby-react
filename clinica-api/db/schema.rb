@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_04_173510) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_04_234134) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "doctors", force: :cascade do |t|
+    t.string "name"
+    t.string "specialty"
+    t.string "crm"
+    t.text "available_days"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["crm"], name: "index_doctors_on_crm", unique: true
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "full_name"
