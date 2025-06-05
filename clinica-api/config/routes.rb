@@ -3,7 +3,9 @@ Rails.application.routes.draw do
 
   post '/login', to: 'auth#login'
   post '/signup', to: 'users#create'
+  get 'appointments/all', to: 'appointments#all'
 
   resources :users, only: [:index, :show, :update, :destroy]
   resources :doctors
+  resources :appointments, only: [:index, :show, :create, :destroy]
 end
