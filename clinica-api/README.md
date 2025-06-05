@@ -66,7 +66,7 @@ Appointments must follow these rules:
 - Duration is fixed at 30 minutes (handled externally)
 - A doctor cannot have overlapping appointments
 - A patient cannot book two appointments at the same time
-- Cancellations are only allowed 24h in advance (logical deletion via status)
+- Cancellations are only allowed 24h in advance
 
 Appointment model fields:
 
