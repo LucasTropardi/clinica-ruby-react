@@ -1,14 +1,7 @@
 import { useEffect, useState } from 'react';
 import styles from './Home.module.css';
 import { get } from '../../services/api';
-
-interface Doctor {
-  id: number;
-  name: string;
-  specialty: string;
-  crm: string;
-  available_days: string[];
-}
+import type { Doctor } from '../../models/Doctor';
 
 export function Home() {
   const [specialties, setSpecialties] = useState<string[]>([]);
