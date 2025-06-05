@@ -78,6 +78,29 @@ export function Register() {
           />
 
           <TextField
+            name="cellphone"
+            label="Telefone"
+            fullWidth
+            required
+            margin="normal"
+            value={form.cellphone}
+            onChange={(e) => {
+              const formatted = formatPhone(e.target.value);
+              setForm({ ...form, cellphone: formatted });
+            }}
+          />
+
+          <TextField
+            name="address"
+            label="Endereço"
+            fullWidth
+            required
+            margin="normal"
+            value={form.address}
+            onChange={handleChange}
+          />
+
+          <TextField
             name="email"
             label="Email"
             fullWidth
@@ -113,29 +136,6 @@ export function Register() {
             }}
             error={!!passwordError}
             helperText={passwordError}
-          />
-
-          <TextField
-            name="cellphone"
-            label="Telefone"
-            fullWidth
-            required
-            margin="normal"
-            value={form.cellphone}
-            onChange={(e) => {
-              const formatted = formatPhone(e.target.value);
-              setForm({ ...form, cellphone: formatted });
-            }}
-          />
-
-          <TextField
-            name="address"
-            label="Endereço"
-            fullWidth
-            required
-            margin="normal"
-            value={form.address}
-            onChange={handleChange}
           />
 
           <Typography variant="subtitle1" style={{ marginTop: 16 }}>
