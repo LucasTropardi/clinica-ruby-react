@@ -24,7 +24,7 @@ export function Login() {
   return (
     <Container maxWidth="sm" className={styles.container}>
       <Paper elevation={3} className={styles.paper}>
-        <div className={styles.logo}></div>
+        <img src="/cross.png" alt="" className={styles.cross} />
         <Typography variant="h5" gutterBottom>Login</Typography>
         <form onSubmit={handleSubmit}>
           <TextField

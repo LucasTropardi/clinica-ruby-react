@@ -34,9 +34,9 @@ export function Navbar() {
     <nav className={styles.nav}>
       <div className={styles.left}>
         <Link to="/">Home</Link>
-        <Link to="/doctors">Doctors</Link>
+        <Link to="/doctors">Médicos</Link>
         {isAuthenticated && isAdmin && (
-          <Link to="#">Gerencial</Link>
+          <Link to="/gerencial">Gerencial</Link>
         )}
       </div>
       <div className={styles.right}>
@@ -47,8 +47,8 @@ export function Navbar() {
         ) : (
           <>
             <Link to="/login">Login</Link>
-            {' | '}
-            <Link to="/register">Register</Link>
+            
+            <Link to="/register">Cadastre-se</Link>
           </>
         )}
       </div>

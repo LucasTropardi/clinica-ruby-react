@@ -8,6 +8,7 @@ import { Login } from './pages/login/Login'
 import { Register } from './pages/register/Register' 
 import { AuthProvider } from './contexts/AuthContext'
 import { Appointments } from './pages/appointments/Appointments'
+import { Gerencial } from './pages/gerencial/Gerencial'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -20,6 +21,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
             <Route path="/appointments" element={<Appointments />} />
+            <Route path="/gerencial" element={<Gerencial />} />
           </Route>
         </Routes>
       </BrowserRouter>

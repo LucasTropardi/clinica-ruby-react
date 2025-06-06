@@ -21,7 +21,8 @@ export function Home() {
     <div className={styles.container}>
       <header className={styles.header}>
         <div className={styles.logo}>
-          <div className={styles.cross}></div>
+          {/* <div className={styles.cross}></div> */}
+          <img src="/cross.png" alt="" className={styles.cross} />
           <h1>Ruby Medic Center</h1>
         </div>
         <p className={styles.subtitle}>
@@ -52,7 +53,7 @@ export function Home() {
       <section className={styles.section}>
         <h2>Agende sua consulta</h2>
         <p>
-          Faça login para escolher um médico e encontrar os melhores horários para você.
+          Escolha o médico da especialidade desejada e agende sua consulta de forma rápida e fácil.
         </p>
       </section>
     </div>

@@ -32,9 +32,14 @@ export async function post<T, U = unknown>(endpoint: string, body: T): Promise<U
 }
 
 export async function put<T, U = unknown>(endpoint: string, body: T): Promise<U> {
+  const token = localStorage.getItem('token');
+
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token && { Authorization: `Bearer ${token}` }),
+    },
     body: JSON.stringify(body),
   });
 

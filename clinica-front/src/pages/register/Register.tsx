@@ -63,7 +63,7 @@ export function Register() {
   return (
     <Container maxWidth="sm" className={styles.container}>
       <Paper elevation={3} className={styles.paper}>
-        <div className={styles.logo}></div>
+        <img src="/cross.png" alt="" className={styles.cross} />
         <Typography variant="h5" gutterBottom>Cadastro</Typography>
 
         <form onSubmit={handleSubmit}>
