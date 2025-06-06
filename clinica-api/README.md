@@ -1,5 +1,5 @@
 
-# Clinic API
+# ClinicApp API
 
 This is a Ruby on Rails RESTful API for managing a medical clinic, built for educational purposes. It includes authentication, user roles, doctor management, and appointment scheduling logic.
 
