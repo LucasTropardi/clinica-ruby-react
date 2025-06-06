@@ -24,6 +24,13 @@ interface Appointment {
   status: string;
 }
 
+interface User {
+  id: number;
+  full_name: string;
+  email: string;
+  role: 'admin' | 'paciente';
+}
+
 const WEEKDAYS = [
   { key: 'mon', label: 'Segunda-feira' },
   { key: 'tue', label: 'Terça-feira' },
@@ -40,6 +47,9 @@ export function Gerencial() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [selectedAppointmentId, setSelectedAppointmentId] = useState<number | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
+  const [confirmUserDialogOpen, setConfirmUserDialogOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
   const [form, setForm] = useState({
     name: '',
@@ -66,9 +76,19 @@ export function Gerencial() {
     }
   };
 
+  const fetchUsers = async () => {
+    try {
+      const data = await get<User[]>('/users');
+      setUsers(data);
+    } catch (err) {
+      console.error('Erro ao buscar usuários:', err);
+    }
+  };
+
   useEffect(() => {
     fetchDoctors();
     fetchAppointments();
+    fetchUsers();
   }, []);
 
   const openNewDoctor = () => {
@@ -150,6 +170,28 @@ export function Gerencial() {
     }
   };
 
+  const openUserConfirmDialog = (id: number) => {
+    setSelectedUserId(id);
+    setConfirmUserDialogOpen(true);
+  };
+
+  const closeUserConfirmDialog = () => {
+    setSelectedUserId(null);
+    setConfirmUserDialogOpen(false);
+  };
+
+  const handleConfirmDeleteUser = async () => {
+    if (!selectedUserId) return;
+    try {
+      await del(`/users/${selectedUserId}`);
+      fetchUsers();
+    } catch (err) {
+      console.error('Erro ao excluir usuário:', err);
+    } finally {
+      closeUserConfirmDialog();
+    }
+  };
+
   return (
     <Container className={styles.container}>
       <Typography variant="h4" gutterBottom>Área Gerencial</Typography>
@@ -228,6 +270,41 @@ export function Gerencial() {
         </Paper>
       </section>
 
+      <section className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <Typography variant="h6">Pacientes</Typography>
+        </div>
+
+        <Paper className={styles.tableWrapper}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>Nome</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Permissão</TableCell>
+                <TableCell align="right">Ações</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {users.map((user) => (
+                <TableRow key={user.id}>
+                  <TableCell>{user.id}</TableCell>
+                  <TableCell>{user.full_name}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.role}</TableCell>
+                  <TableCell align="right">
+                    <Button size="small" color="error" onClick={() => openUserConfirmDialog(user.id)}>
+                      Excluir
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Paper>
+      </section>
+
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} fullWidth>
         <DialogTitle>{editingDoctor ? 'Editar Médico' : 'Novo Médico'}</DialogTitle>
         <DialogContent>
@@ -291,6 +368,19 @@ export function Gerencial() {
         <DialogActions>
           <Button onClick={closeConfirmDialog}>Cancelar</Button>
           <Button onClick={handleConfirmDeleteAppointment} variant="contained" color="error">
+            Confirmar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={confirmUserDialogOpen} onClose={closeUserConfirmDialog}>
+        <DialogTitle>Confirmar Exclusão</DialogTitle>
+        <DialogContent>
+          <Typography>Deseja realmente excluir este usuário?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeUserConfirmDialog}>Cancelar</Button>
+          <Button onClick={handleConfirmDeleteUser} variant="contained" color="error">
             Confirmar
           </Button>
         </DialogActions>
