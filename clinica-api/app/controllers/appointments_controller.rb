@@ -3,10 +3,6 @@ class AppointmentsController < ApplicationController
   before_action :check_ownership, only: [:show, :destroy]
 
   def all
-    unless current_user.role == 'admin'
-      return render json: { error: 'Unauthorized' }, status: :unauthorized
-    end
-
     appointments = Appointment.all
     render json: appointments
   end
@@ -43,6 +39,61 @@ class AppointmentsController < ApplicationController
       @appointment.destroy
       head :no_content
     end
+  end
+
+  def by_doctor
+    doctor_id = params[:doctor_id]
+    date = params[:date]
+
+    unless doctor_id.present? && date.present?
+      return render json: { error: 'doctor_id and date are required' }, status: :bad_request
+    end
+
+    appointments = Appointment
+      .where(doctor_id: doctor_id, date: date, status: "active")
+      .select(:time)
+
+    render json: appointments
+  end
+
+  def available_times
+    doctor = Doctor.find_by(id: params[:id])
+    date = params[:date]
+
+    if doctor.nil?
+      return render json: { error: 'Doctor not found' }, status: :not_found
+    end
+
+    if date.blank?
+      return render json: { error: 'Date is required' }, status: :bad_request
+    end
+
+    begin
+      date_obj = Date.parse(date)
+    rescue ArgumentError
+      return render json: { error: 'Invalid date format' }, status: :unprocessable_entity
+    end
+
+    weekday = date_obj.strftime('%A').downcase
+
+    unless doctor.available_days.include?(weekday)
+      return render json: [] # Médico não atende nesse dia
+    end
+
+    # Horários padrão: 08:00–11:30 e 14:00–17:30 (intervalo de 30min)
+    slots = (8..11).to_a.concat((14..17).to_a).flat_map do |hour|
+      ["#{format('%02d', hour)}:00", "#{format('%02d', hour)}:30"]
+    end
+
+    # Horários já ocupados pelo médico (convertidos para string 'HH:MM')
+    taken = Appointment
+              .where(doctor_id: doctor.id, date: date)
+              .pluck(Arel.sql("to_char(time, 'HH24:MI')"))
+
+    # Subtrai os ocupados dos possíveis
+    available = slots - taken
+
+    render json: available
   end
 
   private

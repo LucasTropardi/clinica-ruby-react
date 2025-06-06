@@ -3,6 +3,18 @@
   text-align: center;
 }
 
+.header {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: flex-end; /* Desktop: direita */
+}
+
+@media (max-width: 600px) {
+  .header {
+    justify-content: center; /* Mobile: centralizado */
+  }
+}
+
 .grid {
   display: flex;
   flex-wrap: wrap;

@@ -7,6 +7,7 @@ import { Doctors } from './pages/doctors/Doctors'
 import { Login } from './pages/login/Login' 
 import { Register } from './pages/register/Register' 
 import { AuthProvider } from './contexts/AuthContext'
+import { Appointments } from './pages/appointments/Appointments'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -18,6 +19,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <Route path="doctors" element={<Doctors />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
+            <Route path="/appointments" element={<Appointments />} />
           </Route>
         </Routes>
       </BrowserRouter>

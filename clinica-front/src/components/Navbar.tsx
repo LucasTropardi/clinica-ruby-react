@@ -12,7 +12,7 @@ import { useState } from 'react';
 import styles from './Navbar.module.css';
 
 export function Navbar() {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
   const [confirmOpen, setConfirmOpen] = useState(false);
 
@@ -35,10 +35,15 @@ export function Navbar() {
       <div className={styles.left}>
         <Link to="/">Home</Link>
         <Link to="/doctors">Doctors</Link>
+        {isAuthenticated && isAdmin && (
+          <Link to="#">Gerencial</Link>
+        )}
       </div>
       <div className={styles.right}>
         {isAuthenticated ? (
-          <button onClick={handleLogoutClick} className={styles.logoutButton}>Sair</button>
+          <>
+            <button onClick={handleLogoutClick} className={styles.logoutButton}>Sair</button>
+          </>
         ) : (
           <>
             <Link to="/login">Login</Link>
@@ -57,7 +62,7 @@ export function Navbar() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCancelLogout} color="inherit">Cancelar</Button>
-          <Button onClick={handleConfirmLogout} color="primary" variant="contained">Sair</Button>
+          <Button onClick={handleConfirmLogout} color="error" variant="contained">Sair</Button>
         </DialogActions>
       </Dialog>
     </nav>

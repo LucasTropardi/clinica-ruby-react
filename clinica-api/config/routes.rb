@@ -5,7 +5,9 @@ Rails.application.routes.draw do
   post '/signup', to: 'users#create'
   get 'appointments/all', to: 'appointments#all'
 
-  resources :users, only: [:index, :show, :update, :destroy]
+  get '/doctors/:id/available_times', to: 'appointments#available_times'
+
   resources :doctors
+  resources :users, only: [:index, :show, :update, :destroy]
   resources :appointments, only: [:index, :show, :create, :destroy]
 end

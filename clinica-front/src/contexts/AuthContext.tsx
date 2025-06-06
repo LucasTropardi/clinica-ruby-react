@@ -17,8 +17,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      const response = await authService.login({ email: email, password });
+      const response = await authService.login({ email, password });
       localStorage.setItem('token', response.token);
+
+      // Decodifica o JWT e extrai o ID do usuário
+      const payload = JSON.parse(atob(response.token.split('.')[1]));
+      // console.log('Payload do token:', payload);
+      localStorage.setItem('user_id', String(payload.user_id));
+
       setToken(response.token);
       return true;
     } catch (error) {
