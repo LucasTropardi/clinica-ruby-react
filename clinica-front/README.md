@@ -1,54 +1,86 @@
-# React + TypeScript + Vite
+# ClinicApp Front-End
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the front-end application for **Clinica**, a simple online medical scheduling system built using **React**, **TypeScript**, and **Material UI**. It interacts with a Ruby on Rails back-end API and provides distinct interfaces for patients and administrators.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### General
+- Developed with **Vite**, using React 19 and TypeScript.
+- Styled with **Material UI (MUI)** components and responsive design.
+- Routes managed with `react-router-dom`.
+- Centralized authentication using JWT tokens.
+- Context API for authentication and role-based access control.
 
-## Expanding the ESLint configuration
+### Patient Area
+- View list of doctors with details like specialty, CRM, and available days.
+- Book appointments selecting date and time.
+- Check slot availability in real-time.
+- View active appointments.
+- Cancel appointments with confirmation dialog.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Admin Area
+Accessible only by users with the `admin` role.
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+#### Doctors Management
+- List of all registered doctors.
+- Create, update, and delete doctors.
+- Select working days via checkbox mapped to weekdays (Monday to Friday).
+
+#### Appointments Management
+- Full list of scheduled appointments.
+- Cancel any appointment with a confirmation dialog.
+
+#### Users Management
+- List of all registered users.
+- Delete user with confirmation.
+
+## Project Structure
+
+```
+src/
+├── components/           // Reusable components
+├── context/              // Auth context
+├── models/               // TypeScript interfaces
+├── pages/                // Main views: Login, Doctors, Appointments, Admin
+├── services/             // API communication (GET, POST, PUT, DELETE)
+├── styles/               // CSS and global styles
+├── utils/                // Helper functions (e.g., authUtils)
+└── main.tsx              // App bootstrap
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## How to Run
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+1. Clone the repository:
+```bash
+git clone https://github.com/LucasTropardi/clinica-ruby-react.git
+cd clinica-front
 ```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Run the app:
+```bash
+npm run dev
+```
+
+4. The app will be available at `http://localhost:5173`.
+
+## Environment Variables
+
+Configure the backend API base URL in `src/services/api.ts`:
+```ts
+export const API_BASE_URL = 'http://localhost:3000';
+```
+
+## Authentication
+
+- Login returns a JWT token stored in `localStorage`.
+- The token is automatically added to authenticated requests.
+- Role-based access determines route visibility and action permissions.
+
+## License
+
+This project is licensed for educational purposes only.
