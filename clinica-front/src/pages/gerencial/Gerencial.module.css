@@ -17,3 +17,8 @@
   max-height: 300px;
   overflow: auto;
 }
+
+.tableWrapper {
+  max-height: 300px;
+  overflow: auto;
+}

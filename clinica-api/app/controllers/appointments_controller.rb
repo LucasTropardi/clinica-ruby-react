@@ -103,7 +103,11 @@ class AppointmentsController < ApplicationController
   end
 
   def check_ownership
-    render json: { error: 'Forbidden' }, status: :forbidden unless @appointment.user_id == current_user.id
+    return if current_user.role == 'admin' # permite admin
+
+    unless @appointment.user_id == current_user.id
+      render json: { error: 'Forbidden' }, status: :forbidden
+    end
   end
 
   def appointment_params

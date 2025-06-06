@@ -15,6 +15,15 @@ interface Doctor {
   available_days: string[];
 }
 
+interface Appointment {
+  id: number;
+  doctor_id: number;
+  user_id: number;
+  date: string;
+  time: string;
+  status: string;
+}
+
 const WEEKDAYS = [
   { key: 'mon', label: 'Segunda-feira' },
   { key: 'tue', label: 'Terça-feira' },
@@ -28,6 +37,9 @@ export function Gerencial() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingDoctor, setEditingDoctor] = useState<Doctor | null>(null);
   const [days, setDays] = useState<string[]>([]);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState<number | null>(null);
 
   const [form, setForm] = useState({
     name: '',
@@ -45,8 +57,18 @@ export function Gerencial() {
     }
   };
 
+  const fetchAppointments = async () => {
+    try {
+      const data = await get<Appointment[]>('/appointments/all');
+      setAppointments(data);
+    } catch (err) {
+      console.error('Erro ao buscar consultas:', err);
+    }
+  };
+
   useEffect(() => {
     fetchDoctors();
+    fetchAppointments();
   }, []);
 
   const openNewDoctor = () => {
@@ -106,6 +128,28 @@ export function Gerencial() {
     }
   };
 
+  const openConfirmDialog = (id: number) => {
+    setSelectedAppointmentId(id);
+    setConfirmDialogOpen(true);
+  };
+
+  const closeConfirmDialog = () => {
+    setSelectedAppointmentId(null);
+    setConfirmDialogOpen(false);
+  };
+
+  const handleConfirmDeleteAppointment = async () => {
+    if (!selectedAppointmentId) return;
+    try {
+      await del(`/appointments/${selectedAppointmentId}`);
+      fetchAppointments();
+    } catch (err) {
+      console.error('Erro ao desmarcar consulta:', err);
+    } finally {
+      closeConfirmDialog();
+    }
+  };
+
   return (
     <Container className={styles.container}>
       <Typography variant="h4" gutterBottom>Área Gerencial</Typography>
@@ -137,6 +181,45 @@ export function Gerencial() {
                   <TableCell align="right">
                     <Button size="small" onClick={() => openEditDoctor(doc)}>Editar</Button>
                     <Button size="small" color="error" onClick={() => handleDelete(doc.id)}>Excluir</Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Paper>
+      </section>
+
+      <section className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <Typography variant="h6">Consultas</Typography>
+        </div>
+
+        <Paper className={styles.tableWrapper}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>Médico ID</TableCell>
+                <TableCell>Usuário ID</TableCell>
+                <TableCell>Data</TableCell>
+                <TableCell>Hora</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell align="right">Ações</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {appointments.map((appt) => (
+                <TableRow key={appt.id}>
+                  <TableCell>{appt.id}</TableCell>
+                  <TableCell>{appt.doctor_id}</TableCell>
+                  <TableCell>{appt.user_id}</TableCell>
+                  <TableCell>{appt.date}</TableCell>
+                  <TableCell>{appt.time}</TableCell>
+                  <TableCell>{appt.status}</TableCell>
+                  <TableCell align="right">
+                    <Button size="small" color="error" onClick={() => openConfirmDialog(appt.id)}>
+                      Desmarcar
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -199,6 +282,20 @@ export function Gerencial() {
           <Button onClick={handleSubmit} variant="contained" color="primary">Salvar</Button>
         </DialogActions>
       </Dialog>
+
+      <Dialog open={confirmDialogOpen} onClose={closeConfirmDialog}>
+        <DialogTitle>Confirmar Desmarcação</DialogTitle>
+        <DialogContent>
+          <Typography>Deseja realmente desmarcar esta consulta?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeConfirmDialog}>Cancelar</Button>
+          <Button onClick={handleConfirmDeleteAppointment} variant="contained" color="error">
+            Confirmar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </Container>
   );
 }
